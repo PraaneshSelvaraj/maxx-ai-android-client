@@ -1,0 +1,264 @@
+<MusicScreen>:
+    
+    MDBoxLayout:
+        orientation: 'vertical'
+        Widget:
+            size_hint:None,None
+            height:'40dp'
+        SongCover:
+            id:sc
+            size:(750,750)
+            size_hint: None, None
+            pos_hint:{'center_x':.5}
+            RotatingImage:
+                id:circle_img
+                angle:sc.angle
+                source:'avatar.jpeg'
+                radius:[750,]
+        Widget:
+            size_hint: None, None
+            height:'25dp'
+
+        Label:
+            text: 'Song Name'
+            id:songname
+            bold:True
+            size_hint_y:None
+            adaptive_height:True
+            font_size:'30sp'
+            height:self.texture_size[1]
+
+        Label:
+            text: 'Artist Name'
+            id:artistname
+            size_hint_y:None
+            font_size:'20sp'
+            height:self.texture_size[1]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding:'10dp'
+
+            MDBoxLayout:
+                Widget:
+                MyIcon:
+                    icon:'restart'
+                    on_release:
+                        root.update_music("")
+
+                MyIcon:
+                    icon: 'skip-previous-outline'
+                    on_release:
+                        app.media_control('pl_previous')
+                        root.update_music("")
+                MyIcon:
+                    icon: 'skip-backward-outline'
+                    on_release:
+                        app.media_control('seek&val=-10')
+                        root.update_music("")
+                MyIcon:
+                    icon: 'play-outline'
+                    color:
+                    on_release:
+                        app.media_control('pl_pause')
+                        root.update_music("")
+                MyIcon:
+                    icon: 'skip-forward-outline'
+                    on_release:
+                        app.media_control('seek&val=+10')
+                        root.update_music("")
+                MyIcon:
+                    icon: 'skip-next-outline'
+                    on_release:
+                        app.media_control('pl_next')
+                        root.update_music("")
+                MyIcon:
+                    icon:'volume-high'
+                    on_release:
+                        root.update_music("")
+                Widget:
+            Widget:
+
+<MyIcon@MDIconButton>:
+    color:[.7,0,0,1]
+    size_hint:None,None
+    user_font_size:'20sp'
+    size:('30dp','30dp')
+
+
+<RotatingImage@FitImage>:
+    angle:0
+    canvas.before:
+        PushMatrix
+        Rotate:
+            angle: root.angle
+            origin: self.center
+        
+    canvas.after:
+        PopMatrix
+
+<ConnectScreen>:
+    name:'connect'
+    BoxLayout:
+        orientation:'vertical'
+        spacing:'10dp'
+        padding:'10dp'
+        Widget:
+        MDLabel:
+            text:'Connect'
+            font_style:'H4'
+            size_hint_y:None
+            halign:'center'
+            height:self.texture_size[1]
+
+
+        MDTextField:
+            id:devicename
+            hint_text:'Device name'
+            helper_text:'Enter the name for this device'
+            helper_text_mode:'on_focus'
+            icon_right:'account'
+            icon_right_color:app.theme_cls.primary_color
+        
+        MDTextField:
+            id:ip
+            hint_text:'IP Address'
+            helper_text:'Enter ip address of the server'
+            helper_text_mode:'on_focus'
+            icon_right:'server'
+            icon_right_color:app.theme_cls.primary_color
+        
+        MDTextField:
+            id:port
+            hint_text:'Port Number'
+            helper_text:'Enter the port the server is listening to'
+            helper_text_mode:'on_focus'
+            icon_right:'serial-port'
+            icon_right_color:app.theme_cls.primary_color
+
+        MDRectangleFlatButton:
+            text:'Connect'
+            on_release:app.check_data()
+            pos_hint:{'center_x':0.5}
+        Widget:
+
+<MainScreen>:
+    name:'main'
+    Screen:
+        MDNavigationLayout:
+            ScreenManager:
+                Screen:
+                    BoxLayout:
+                        orientation:'vertical'
+                        MDTopAppBar:
+                            id:tool_box_lbl
+                            title:'Max AI'
+                            left_action_items:[["menu",lambda x: nav_drawer.set_state('toggle')]]
+                            elevation:10
+
+                        Widget:
+        ScreenManager:
+            id:inner_screen_manager
+            Screen:
+                name:"msg"
+                BoxLayout:
+                    orientation:'vertical'
+                    Label:
+                    ScrollView:
+                        size_hint_y:None
+                        height:root.height - (root.height * 15/100)
+                        MDList:
+                            id:msg_log
+
+                    BoxLayout:
+                        orientation:'horizontal'
+                        padding:'5dp'
+                        spacing:'5dp'
+                        MDTextField:
+                            id:msg_text
+                            hint_text:"Message"
+                            helper_text:"Send a message to server"
+                            helper_text_mode:'on_focus'
+                        
+                        MDIconButton:
+                            icon:'send'
+                            on_release:app.send_msg()
+            
+            Screen:
+                name:'media'
+                
+                BoxLayout:
+                    
+                    MusicScreen:
+                        size_hint_y: None
+                        height:root.height-(root.height*(8/100))
+
+
+            Screen: 
+                name: "settings"
+                BoxLayout:
+                    orientation:'vertical'
+                    padding:'10dp'
+                    spacing:'10dp'
+                    
+                    MDLabel:
+                        text:'Settings'
+                        font_style:'H4'
+                        halign:'center'
+                        pos_hint_y:None
+                        pos_hint:{'top':1}
+
+                    BoxLayout:
+                        orientation:'horizontal'
+                        padding:'10dp'
+                        spacing:'10dp'
+                        MDLabel:
+                            text:'Dark Mode'
+                            halign:'left'
+
+                        MDSwitch:
+                            id:darkmode_switch
+                            pos_hint:{'center_x':0.5,'center_y':0.5}
+                            on_active:app.change_theme()
+
+        MDNavigationDrawer:
+            id:nav_drawer
+            BoxLayout:
+                orientation:'vertical'
+                spacing:'10dp'
+                padding:'10dp'
+
+                ScrollView:
+
+                    MDList:
+                        OneLineIconListItem:
+                            text:"Message"
+                            on_release: app.switch_inside('msg')
+                            IconLeftWidget:
+                                icon:'send'
+                                on_release: app.switch_inside('msg')
+
+                        OneLineIconListItem:
+                            text:"Media Controls"
+                            on_release:app.switch_inside("media")
+                            IconLeftWidget:
+                                icon: "play"
+                                on_release:app.switch_inside("media")
+                        OneLineIconListItem:
+                            text:"Settings"
+                            on_release: app.switch_inside('settings')
+                            IconLeftWidget:
+                                icon:'cog'
+                                on_release: app.switch_inside('settings')
+                        
+                        OneLineIconListItem:
+                            text:"Logout"
+                            on_release: app.logout()
+                            IconLeftWidget:
+                                icon:'logout'
+                                on_release: app.logout()
+
+ScreenManager:
+    ConnectScreen:
+    MainScreen:
+    
