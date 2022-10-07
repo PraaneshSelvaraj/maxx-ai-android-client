@@ -1,5 +1,5 @@
 
-# Maxx-AI ANdroid Client
+# Maxx-AI Android Client
 
 Maxx-AI Android Client is an open source android client to controll and communicate with Maxx-AI.
 
@@ -9,7 +9,7 @@ Go to the release pages, and download the latest version of the app.
     
 ## Documentation
 
-[Documentation](https://maxxai.gitbook.io/maxx-ai/android)
+[Documentation](https://maxxai.gitbook.io/maxx-ai/devices/android)
 
 
 ## License
