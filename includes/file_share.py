@@ -2,31 +2,6 @@ import os
 import socket
 from time import sleep
 
-
-def send(filename):
-    SEPARATOR = "<SEPARATOR>"
-    BUFFER_SIZE = 4096 
-    host = '0.0.0.0'
-    port = 5001
-    s=socket.socket()
-    s.bind((host, port))
-    s.listen(5)
-    print(f"[*] Listening as {host}:{port}")
-    client_socket, address = s.accept() 
-    filesize = os.path.getsize(filename)
-    print(filesize)
-    client_socket.send(f"{filename}{SEPARATOR}{filesize}".encode('ascii'))
-    msg = client_socket.recv(BUFFER_SIZE).decode('ascii')
-    with open(filename, "rb") as f:
-        while True:
-            bytes_read = f.read(BUFFER_SIZE)
-            if not bytes_read:
-                break
-            client_socket.sendall(bytes_read)
-
-    s.close()
-    client_socket.close()
-
 def recieve(host,path,port=5001):
     BUFFER_SIZE = 4096
     SEPARATOR = "<SEPARATOR>"
