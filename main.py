@@ -71,21 +71,24 @@ class MusicScreen(Screen):
             Clock.schedule_once(self.updater_music,1)
 
     def updater_music(self,_):
-        print("update music")
-        song = self.get_current_song()
-        if song['artwork'] !='avatar.jpg':
-            pth = self.get_artwork(song['artwork'],song['name'],song['artist'])
-        if song == None:
-            song = "Offline"
+        try:
+            print("update music")
+            song = self.get_current_song()
+            if song['artwork'] !='avatar.jpg':
+                pth = self.get_artwork(song['artwork'],song['name'],song['artist'])
+            if song == None:
+                song = "Offline"
 
-        self.ids.songname.text= song['name']
-        self.ids.artistname.text= song['artist']
-        sleep(1)
-        if song['artwork'] !='avatar.jpg':
-            self.ids.circle_img.source = pth     
+            self.ids.songname.text= song['name']
+            self.ids.artistname.text= song['artist']
+            sleep(1)
+            if song['artwork'] !='avatar.jpg':
+                self.ids.circle_img.source = pth
 
-        else:
-            self.ids.circle_img.source = "avatar.jpg"
+            else:
+                self.ids.circle_img.source = "avatar.jpg"
+        except Exception as e:
+            print(e)
 
     def get_current_song(self):
         d={'name':'Offline','artist':'Unknown','artwork':'avatar.jpg'}
